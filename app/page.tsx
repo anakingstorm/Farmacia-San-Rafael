@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const products = await prisma.product.findMany({ take: 6, orderBy: { createdAt: 'desc' } });

@@ -47,6 +47,28 @@ SIICAR:
 - Definir SIICAR_BASE_URL y SIICAR_API_KEY en entorno de prod.
 - Endpoint: POST /api/siicar/sale { orderId }
 
+## Operativa Vercel y CI
+
+- Prisma en Vercel: se agregó `postinstall` con `prisma generate` para evitar cliente desactualizado.
+- Páginas dinámicas: se marcó `export const dynamic = 'force-dynamic'` en páginas que leen DB para evitar prerender en build.
+- GitHub Actions:
+	- `CI (build-and-test)`: compila y ejecuta tests en cada push/PR.
+	- `Migrate DB`: aplica `prisma migrate deploy` usando el secret `DATABASE_URL`. Puedes dispararlo manualmente para ejecutar `seed`.
+
+### Variables en Vercel (Production y Preview)
+- NEXTAUTH_URL = https://<tu-app>.vercel.app
+- NEXTAUTH_SECRET = <genera uno>
+- DATABASE_URL = postgresql://...
+- SIICAR_BASE_URL, SIICAR_API_KEY
+- SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD, SEED_ADMIN_NAME (opcional)
+
+### Branch protection
+En GitHub > Settings > Branches > Add rule (main):
+- Require a pull request before merging (1 review)
+- Require status checks to pass (selecciona CI)
+- Require branches to be up to date (opcional)
+- Include administrators (opcional)
+
 ## Instalación
 ```bash
 npm install

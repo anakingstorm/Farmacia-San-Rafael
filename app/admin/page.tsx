@@ -1,4 +1,5 @@
 import { prisma } from '../../lib/prisma';
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const [products, orders, users] = await Promise.all([

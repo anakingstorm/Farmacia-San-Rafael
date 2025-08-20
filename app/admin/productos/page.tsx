@@ -1,4 +1,5 @@
 import { prisma } from '../../../lib/prisma';
+export const dynamic = 'force-dynamic';
 
 export default async function AdminProductosPage() {
   const products = await prisma.product.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } });
