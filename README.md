@@ -37,6 +37,7 @@ Opción Vercel (recomendada):
 Base de datos:
 - Cambia a Postgres en producción. Puedes usar `prisma/schema.postgres.prisma` como referencia.
 - Ajusta `prisma/schema.prisma` (provider postgresql) y corre migraciones.
+- Para Vercel Postgres: define también `DIRECT_URL` (string de conexión directa) además de `DATABASE_URL` (pooled).
 
 Migración a Postgres (resumen):
 1. Actualiza `datasource db { provider = "postgresql" }` en `prisma/schema.prisma` y `.env` con la nueva `DATABASE_URL`.
@@ -59,6 +60,7 @@ SIICAR:
 - NEXTAUTH_URL = https://<tu-app>.vercel.app
 - NEXTAUTH_SECRET = <genera uno>
 - DATABASE_URL = postgresql://...
+- DIRECT_URL = postgresql://... (si usas Vercel Postgres)
 - SIICAR_BASE_URL, SIICAR_API_KEY
 - SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD, SEED_ADMIN_NAME (opcional)
 
