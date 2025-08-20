@@ -4,6 +4,8 @@ import AddToCartButton from './AddToCartButton';
 
 interface Props { params: { id: string } }
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductoDetalle({ params }: Props) {
   const product = await prisma.product.findUnique({ where: { id: params.id } });
   if (!product) return notFound();

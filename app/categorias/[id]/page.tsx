@@ -4,6 +4,8 @@ import Link from 'next/link';
 
 interface Props { params: { id: string } }
 
+export const dynamic = 'force-dynamic';
+
 export default async function CategoriaDetalle({ params }: Props) {
   const category = await prisma.category.findUnique({ where: { id: params.id }, include: { products: true } });
   if (!category) return notFound();
