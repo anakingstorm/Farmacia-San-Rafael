@@ -11,8 +11,6 @@ Proyecto base con Next.js 14 (App Router), TypeScript, Prisma, NextAuth, Tailwin
 - Layout básico con Tailwind
 
 ## Requisitos previos
-- Node.js 18+
-- Base de datos PostgreSQL (puedes cambiar provider en `schema.prisma`)
 
 ## Variables de entorno
 Copia `.env.example` a `.env` y ajusta:
@@ -23,6 +21,31 @@ NEXTAUTH_URL=http://localhost:3000
 SIICAR_BASE_URL=
 SIICAR_API_KEY=
 ```
+
+## Deploy / Hosting
+
+Dev local usa SQLite. Para producción, usa Postgres gestionado y un hosting tipo Vercel.
+
+Opción Vercel (recomendada):
+- Conecta el repo y configura Variables en Project Settings:
+	- NEXTAUTH_URL=https://<tu-app>.vercel.app
+	- NEXTAUTH_SECRET=<genera uno>
+	- DATABASE_URL=postgresql://usuario:pass@host:port/db
+	- SIICAR_BASE_URL, SIICAR_API_KEY
+- Build & deploy automático.
+
+Base de datos:
+- Cambia a Postgres en producción. Puedes usar `prisma/schema.postgres.prisma` como referencia.
+- Ajusta `prisma/schema.prisma` (provider postgresql) y corre migraciones.
+
+Migración a Postgres (resumen):
+1. Actualiza `datasource db { provider = "postgresql" }` en `prisma/schema.prisma` y `.env` con la nueva `DATABASE_URL`.
+2. `cmd /c npm run prisma:migrate`
+3. `cmd /c npm run db:seed`
+
+SIICAR:
+- Definir SIICAR_BASE_URL y SIICAR_API_KEY en entorno de prod.
+- Endpoint: POST /api/siicar/sale { orderId }
 
 ## Instalación
 ```bash

@@ -1,5 +1,4 @@
 import { prisma } from '../../../lib/prisma';
-import NewProductForm from './product-form';
 
 export default async function AdminProductosPage() {
   const products = await prisma.product.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } });
@@ -7,7 +6,59 @@ export default async function AdminProductosPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Productos</h1>
-      <NewProductForm categories={categories} />
+      <form
+        className="space-y-2 border p-3 rounded bg-white text-xs"
+        method="post"
+        action="/api/admin/products"
+      >
+        <div className="flex gap-2 flex-wrap">
+          <input
+            name="name"
+            placeholder="Nombre"
+            required
+            className="border p-1 rounded flex-1 min-w-[160px]"
+          />
+          <select
+            name="categoryId"
+            required
+            className="border p-1 rounded min-w-[160px]"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Categoría
+            </option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <input
+            name="priceCents"
+            type="number"
+            min={0}
+            step={1}
+            placeholder="Precio (¢)"
+            required
+            className="border p-1 rounded w-28"
+          />
+          <input
+            name="stock"
+            type="number"
+            min={0}
+            step={1}
+            placeholder="Stock"
+            required
+            className="border p-1 rounded w-24"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+          >
+            Agregar
+          </button>
+        </div>
+      </form>
       <table className="w-full text-xs border">
         <thead className="bg-gray-50">
           <tr className="text-left">

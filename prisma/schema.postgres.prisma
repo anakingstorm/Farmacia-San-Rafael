@@ -1,5 +1,4 @@
-// Prisma schema for Farmacia San Rafael
-// Ejecuta: npx prisma migrate dev --name init
+// Prisma schema for Farmacia San Rafael (PostgreSQL for production)
 
 generator client {
   provider = "prisma-client-js"
@@ -15,7 +14,7 @@ model User {
   name      String?
   email     String    @unique
   password  String
-  role      String    @default("CUSTOMER") // Valores esperados: ADMIN | CUSTOMER
+  role      String    @default("CUSTOMER")
   orders    Order[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -52,7 +51,7 @@ model Order {
   id          String    @id @default(cuid())
   userId      String
   user        User      @relation(fields: [userId], references: [id])
-  status      String    @default("PENDING") // PENDING | PAID | CANCELLED | FULFILLED
+  status      String    @default("PENDING")
   totalCents  Int
   items       OrderItem[]
   createdAt   DateTime  @default(now())
@@ -69,7 +68,6 @@ model OrderItem {
   unitPriceCents Int
 }
 
-// NextAuth Models
 model Account {
   id                String  @id @default(cuid())
   userId            String

@@ -9,8 +9,15 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+  "prisma:generate:pg": "prisma generate --schema prisma/schema.postgres.prisma",
+  "prisma:migrate:pg": "prisma migrate deploy --schema prisma/schema.postgres.prisma",
+  "db:seed:pg": "prisma db seed --schema prisma/schema.postgres.prisma",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
