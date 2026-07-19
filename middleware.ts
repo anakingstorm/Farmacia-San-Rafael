@@ -6,7 +6,7 @@ const adminPrefix = '/admin';
 export async function middleware(req: any) {
   const url = new URL(req.url);
   if (!url.pathname.startsWith(adminPrefix)) return NextResponse.next();
-  const token = await getToken({ req });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
     return NextResponse.redirect(new URL(`/cuenta/login?callbackUrl=${encodeURIComponent(url.pathname)}`, url.origin));
   }

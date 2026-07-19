@@ -11,9 +11,14 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    const res = await signIn('credentials', { email, password, redirect: false });
+    const res = await signIn('credentials', { email, password, callbackUrl, redirect: false });
     if (res?.error) {
       setError('Credenciales inválidas');
+      return;
+    }
+
+    if (res?.url) {
+      router.push(res.url);
       return;
     }
 
