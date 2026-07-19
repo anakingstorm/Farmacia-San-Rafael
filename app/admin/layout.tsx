@@ -9,7 +9,11 @@ export const metadata = { title: 'Admin | Farmacia San Rafael' };
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (session?.user?.role !== 'ADMIN') {
+  if (!session?.user?.email) {
+    redirect('/cuenta/login');
+  }
+
+  if (!isAdminOwnerSession(session)) {
     redirect('/cuenta/login');
   }
 

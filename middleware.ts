@@ -7,8 +7,8 @@ export async function middleware(req: any) {
   const url = new URL(req.url);
   if (!url.pathname.startsWith(adminPrefix)) return NextResponse.next();
   const token = await getToken({ req });
-  if (!token || (token as any).role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/cuenta/login?unauthorized=1', url.origin));
+  if (!token) {
+    return NextResponse.redirect(new URL(`/cuenta/login?callbackUrl=${encodeURIComponent(url.pathname)}`, url.origin));
   }
   return NextResponse.next();
 }

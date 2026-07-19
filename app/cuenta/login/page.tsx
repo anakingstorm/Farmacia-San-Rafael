@@ -1,25 +1,8 @@
-"use client";
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import LoginForm from './login-form';
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter();
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const res = await signIn('credentials', { email, password, redirect: false });
-    if (res?.error) setError('Credenciales inválidas'); else router.push('/');
-  }
-  return (
-    <form onSubmit={submit} className="max-w-sm space-y-4">
-      <h1 className="text-xl font-semibold">Ingresar</h1>
-      {error && <div className="text-red-600 text-sm">{error}</div>}
-      <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" type="email" required className="border w-full p-2 rounded text-sm" />
-      <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Contraseña" type="password" required className="border w-full p-2 rounded text-sm" />
-      <button className="bg-brand text-white px-4 py-2 rounded text-sm w-full">Entrar</button>
-    </form>
-  );
+export const dynamic = 'force-dynamic';
+
+export default function LoginPage({ searchParams }: { searchParams?: { callbackUrl?: string } }) {
+  const callbackUrl = searchParams?.callbackUrl || '/';
+  return <LoginForm callbackUrl={callbackUrl} />;
 }
