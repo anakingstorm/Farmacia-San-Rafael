@@ -10,6 +10,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="font-semibold text-brand">Admin</div>
         <nav className="flex flex-col gap-2">
           <Link href="/admin">Dashboard</Link>
+          <Link href="/admin/datos">Datos</Link>
           <Link href="/admin/productos">Productos</Link>
           <Link href="/admin/ordenes">Órdenes</Link>
         </nav>

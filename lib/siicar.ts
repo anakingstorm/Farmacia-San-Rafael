@@ -6,6 +6,12 @@ export interface SiicarSaleItem { sku: string | null; name: string; unitPriceCen
 export interface SiicarSalePayload { externalOrderId: string; totalCents: number; currency: string; items: SiicarSaleItem[]; }
 export interface SiicarSaleResult { ok: boolean; integrationRef: string; echo?: SiicarSalePayload; }
 
+type OrderSaleItem = {
+  product: { sku: string | null; name: string };
+  unitPriceCents: number;
+  quantity: number;
+};
+
 export class SiicarClient {
   private baseUrl: string;
   private apiKey: string;
@@ -20,7 +26,7 @@ export class SiicarClient {
       externalOrderId: order.id,
       totalCents: order.totalCents,
       currency: 'MXN',
-      items: order.items.map(i => ({ sku: i.product.sku, name: i.product.name, unitPriceCents: i.unitPriceCents, quantity: i.quantity }))
+      items: (order.items as OrderSaleItem[]).map((item) => ({ sku: item.product.sku, name: item.product.name, unitPriceCents: item.unitPriceCents, quantity: item.quantity }))
     };
     // If envs look like stub, short-circuit
     const isStub = this.baseUrl.includes('stub') || this.apiKey === 'stub-key';

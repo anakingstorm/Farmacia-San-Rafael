@@ -44,6 +44,9 @@ model Product {
   imageUrl    String?
   categoryId  String
   category    Category   @relation(fields: [categoryId], references: [id])
+  // SIICAR sync fields
+  siicarSku   String?    // SKU en SIICAR (puede ser diferente)
+  siicarSync  SiicarProductSync?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   orderItems  OrderItem[]
@@ -103,4 +106,78 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ============ SIICAR SYNC MODELS ============
+
+// Sincronización de productos desde SIICAR
+model SiicarProductSync {
+  id              String   @id @default(cuid())
+  productId       String   @unique
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  siicarSku       String   @unique // SKU en SIICAR
+  lastSyncAt      DateTime @default(now())
+  syncStatus      String   @default("SYNCED") // SYNCED | PENDING | FAILED
+  lastError       String?
+  metadata        Json?    // Datos adicionales de SIICAR
+}
+
+// Ventas importadas desde SIICAR
+model SiicarSale {
+  id              String   @id @default(cuid())
+  externalId      String   @unique // ID original de SIICAR
+  fecha           DateTime
+  items           SiicarSaleItem[]
+  totalCents      Int
+  synced          Boolean  @default(false)
+  syncedAt        DateTime?
+  metadata        Json?    // Datos adicionales
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SiicarSaleItem {
+  id              String   @id @default(cuid())
+  saleId          String
+  sale            SiicarSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  siicarSku       String
+  cantidad        Int
+  precioCents     Int
+}
+
+// Compras importadas desde SIICAR
+model SiicarPurchase {
+  id              String   @id @default(cuid())
+  externalId      String   @unique // ID original de SIICAR
+  fecha           DateTime
+  proveedor       String?
+  items           SiicarPurchaseItem[]
+  totalCents      Int
+  synced          Boolean  @default(false)
+  syncedAt        DateTime?
+  metadata        Json?    // Datos adicionales
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SiicarPurchaseItem {
+  id              String   @id @default(cuid())
+  purchaseId      String
+  purchase        SiicarPurchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  siicarSku       String
+  cantidad        Int
+  costoCents      Int
+}
+
+// Log de sincronizaciones
+model SiicarSyncLog {
+  id              String   @id @default(cuid())
+  tipo            String   // "PRODUCTS" | "INVENTORY" | "SALES" | "PURCHASES"
+  status          String   // "SUCCESS" | "PARTIAL" | "FAILED"
+  itemsProcessed  Int      @default(0)
+  itemsFailed     Int      @default(0)
+  error           String?
+  duration        Int?     // milliseconds
+  metadata        Json?
+  createdAt       DateTime @default(now())
 }

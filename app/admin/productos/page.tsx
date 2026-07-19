@@ -1,9 +1,22 @@
 import { prisma } from '../../../lib/prisma';
 export const dynamic = 'force-dynamic';
 
+type AdminCategory = {
+  id: string;
+  name: string;
+};
+
+type AdminProduct = {
+  id: string;
+  name: string;
+  priceCents: number;
+  stock: number;
+  category: { name: string } | null;
+};
+
 export default async function AdminProductosPage() {
-  const products = await prisma.product.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } });
-  const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } });
+  const products: AdminProduct[] = await prisma.product.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } });
+  const categories: AdminCategory[] = await prisma.category.findMany({ orderBy: { name: 'asc' } });
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Productos</h1>
@@ -28,7 +41,7 @@ export default async function AdminProductosPage() {
             <option value="" disabled>
               Categoría
             </option>
-            {categories.map(c => (
+            {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>

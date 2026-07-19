@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth/config';
 
+type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+
 const schema = z.object({ orderId: z.string(), status: z.enum(['PENDING','PAID','CANCELLED','FULFILLED']) });
 
 export async function PATCH(req: Request) {
@@ -14,7 +16,7 @@ export async function PATCH(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   const { orderId, status } = parsed.data;
   try {
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: TransactionClient) => {
       const current = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } });
       if (!current) throw new Error('No encontrado');
       // If cancelling, restock

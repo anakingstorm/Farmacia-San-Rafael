@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/siicar-sync",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

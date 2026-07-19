@@ -27,18 +27,26 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null;
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return null;
-        return { id: user.id, email: user.email, name: user.name };
+        return { id: user.id, email: user.email, name: user.name, role: user.role };
       }
     })
   ],
-  session: { strategy: 'database' },
+  session: { strategy: 'jwt' },
   pages: {
     signIn: '/cuenta/login'
   },
   callbacks: {
-    async session({ session, user }) {
-      // Añadimos role al objeto session para uso en cliente
-      if (session.user) (session.user as any).role = (user as any).role;
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as { role?: string }).role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).role = token.role;
+        (session.user as any).id = token.sub;
+      }
       return session;
     }
   }

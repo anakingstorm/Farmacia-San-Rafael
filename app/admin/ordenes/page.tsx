@@ -1,8 +1,16 @@
 import { prisma } from '../../../lib/prisma';
 export const dynamic = 'force-dynamic';
 
+type AdminOrder = {
+  id: string;
+  status: string;
+  totalCents: number;
+  user: { email: string };
+  items: Array<{ quantity: number; product: { name: string } }>;
+};
+
 export default async function AdminOrdenesPage() {
-  const orders = await prisma.order.findMany({ include: { user: true, items: { include: { product: true } } }, orderBy: { createdAt: 'desc' } });
+  const orders: AdminOrder[] = await prisma.order.findMany({ include: { user: true, items: { include: { product: true } } }, orderBy: { createdAt: 'desc' } });
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Órdenes</h1>
