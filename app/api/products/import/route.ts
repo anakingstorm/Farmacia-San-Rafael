@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth/config';
+import { isAdminOwnerSession } from '../../../../lib/auth/permissions';
 // Load xlsx dynamically at runtime if available. It's optional to allow `npm install` without it.
 
 // Ajusta estas claves a los headers reales del Excel de SICAR
@@ -40,7 +41,7 @@ function toCents(value: any): number {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!(session && (session.user as any)?.role === 'ADMIN')) {
+  if (!isAdminOwnerSession(session)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
   }
 

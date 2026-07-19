@@ -2,22 +2,13 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import ImportForm from './import-form';
 import { authOptions } from '../../../lib/auth/config';
-import { prisma } from '../../../lib/prisma';
+import { isAdminOwnerSession } from '../../../lib/auth/permissions';
 
 export const dynamic = 'force-dynamic';
 
 async function isAdminSession() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return false;
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { role: true },
-  });
-
-  return user?.role === 'ADMIN';
+  return isAdminOwnerSession(session);
 }
 
 export default async function AdminDatosPage() {

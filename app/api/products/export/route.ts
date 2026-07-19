@@ -1,4 +1,7 @@
 import { prisma } from '../../../../lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../../lib/auth/config';
+import { isAdminOwnerSession } from '../../../../lib/auth/permissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +26,14 @@ function escapeCsv(value: unknown): string {
 }
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!isAdminOwnerSession(session)) {
+    return new Response(JSON.stringify({ error: 'No autorizado' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    });
+  }
+
   const products: ExportProduct[] = await prisma.product.findMany({
     include: { category: true },
     orderBy: { createdAt: 'desc' },

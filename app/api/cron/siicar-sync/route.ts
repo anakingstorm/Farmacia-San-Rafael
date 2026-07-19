@@ -1,12 +1,12 @@
 // Vercel Cron Function: /api/cron/siicar-sync
 //
-// Sincroniza datos de SIICAR cada 5 minutos
+// Sincroniza datos de SIICAR una vez al día
 //
 // Configuración en vercel.json:
 // {
 //   "crons": [{
 //     "path": "/api/cron/siicar-sync",
-//     "schedule": "*/5 * * * *"
+//     "schedule": "0 0 * * *"
 //   }]
 // }
 //
