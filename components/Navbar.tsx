@@ -17,6 +17,7 @@ export function Navbar() {
         <Link href="/carrito" className="relative">Carrito{count>0 && <span className="ml-1 bg-white text-brand rounded-full px-2 text-[10px] font-semibold">{count}</span>}</Link>
         {session?.user ? (
           <div className="flex items-center gap-3">
+              {session.user.role === 'ADMIN' ? <Link href="/admin" className="text-xs underline">Admin</Link> : null}
               <Link href="/cuenta/ordenes" className="text-xs underline">Mis Órdenes</Link>
               <span className="text-xs">Hola, {session.user.name || session.user.email}</span>
               <button onClick={()=>signOut()} className="text-xs underline">Salir</button>
@@ -35,6 +36,7 @@ export function Navbar() {
           <Link href="/carrito" onClick={()=>setOpen(false)}>Carrito {count>0 && <span>({count})</span>}</Link>
           {session?.user ? (
             <>
+              {session.user.role === 'ADMIN' ? <Link href="/admin" onClick={()=>setOpen(false)}>Admin</Link> : null}
               <Link href="/cuenta/ordenes" onClick={()=>setOpen(false)}>Mis Órdenes</Link>
               <button onClick={()=>{signOut(); setOpen(false);}} className="text-left">Salir</button>
             </>
